@@ -1,0 +1,272 @@
+#coding:utf8
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Source des données : https://www.data.gouv.fr/datasets/election-presidentielle-des-10-et-24-avril-2022-resultats-definitifs-du-1er-tour/
+
+# Sources des données : production de M. Forriez, 2016-2023
+
+#Question 4
+
+with open("/home/thomas04dupuy/Desktop/resultats-elections-presidentielles-2022-1er-tour.csv", "r") as fichier:
+    df = pd.read_csv(fichier)
+
+print(df.head())
+
+#Question 5 
+# df = pd.read_csv("/home/thomas04dupuy/Desktop/resultats-elections-presidentielles-2022-1er-tour.csv")
+
+# Sélection des colonnes quantitatives
+colonnes_quantitatives = df.select_dtypes(include=["int", "float"]).columns
+df_quantitatif = df[colonnes_quantitatives]
+
+# Calcul des moyennes avec la méthode Pandas .mean()
+moyennes_series = df_quantitatif.mean(numeric_only=True)
+
+# Conversion en liste [(nom_colonne, moyenne), ...]
+liste_moyennes = [(col, float(moy)) for col, moy in moyennes_series.items()]
+
+# Affichage dans le terminal
+print("Moyennes des colonnes quantitatives :")
+for col, moyenne in liste_moyennes:
+    print(f"- {col} : {moyenne}")
+
+colonnes_quantitatives = df.select_dtypes(include=["int", "float"]).columns
+# Calcul des médianes avec la méthode Pandas .median()
+medians_series = df_quantitatif.median(numeric_only=True)
+
+# Conversion en liste [(nom_colonne, médiane), ...]
+liste_medianes = [(col, float(med)) for col, med in medians_series.items()]
+
+# Affichage du résultat dans le terminal
+print("Médianes des colonnes quantitatives :")
+for col, med in liste_medianes:
+    print(f"- {col} : {med}")
+
+# Sélection des colonnes quantitatives
+colonnes_quantitatives = df.select_dtypes(include=["int", "float"]).columns
+df_quantitatif = df[colonnes_quantitatives]
+
+# df = pd.read_csv("/home/thomas04dupuy/Desktop/resultats-elections-presidentielles-2022-1er-tour.csv")
+
+# Sélection des colonnes quantitatives (nombres uniquement)
+colonnes_quantitatives = df.select_dtypes(include=["int", "float"]).columns
+df_quantitatif = df[colonnes_quantitatives]
+
+# Calcul des médianes avec la méthode Pandas .median()
+medians_series = df_quantitatif.median(numeric_only=True)
+
+# Conversion en liste [(nom_colonne, médiane), ...]
+liste_medianes = [(col, float(med)) for col, med in medians_series.items()]
+
+# Affichage du résultat dans le terminal
+print("Médianes des colonnes quantitatives :")
+for col, med in liste_medianes:
+    print(f"- {col} : {med}")
+
+# df = pd.read_csv("/home/thomas04dupuy/Desktop/resultats-elections-presidentielles-2022-1er-tour.csv")
+
+# Sélection des colonnes quantitatives (numériques)
+colonnes_quantitatives = df.select_dtypes(include=["int", "float"]).columns
+df_quantitatif = df[colonnes_quantitatives]
+
+# Calcul de l'écart-type avec la méthode Pandas .std()
+ecarts_type_series = df_quantitatif.std(numeric_only=True)
+
+# Conversion en liste [(nom_colonne, ecart_type), ...]
+liste_ecarts_type = [(col, float(std)) for col, std in ecarts_type_series.items()]
+
+# Affichage du résultat dans le terminal
+print("Écart-type des colonnes quantitatives :")
+for col, ecart in liste_ecarts_type:
+    print(f"- {col} : {ecart}")
+
+# df = pd.read_csv("/home/thomas04dupuy/Desktop/resultats-elections-presidentielles-2022-1er-tour.csv")
+
+# Sélection des colonnes quantitatives
+colonnes_quantitatives = df.select_dtypes(include=["int", "float"]).columns
+df_quantitatif = df[colonnes_quantitatives]
+
+# Calcul manuel de l'écart absolu à la moyenne
+# (équivalent à l'ancienne méthode .mad())
+ecarts_absolus = df_quantitatif.apply(lambda col: np.mean(np.abs(col - col.mean())))
+
+# Conversion en liste [(colonne, valeur)]
+liste_ecarts_absolus = [(col, float(val)) for col, val in ecarts_absolus.items()]
+
+# Affichage
+print("Écart absolu à la moyenne (écart moyen absolu) de chaque colonne :")
+for col, ecart in liste_ecarts_absolus:
+    print(f"- {col} : {ecart}")
+
+colonnes_quantitatives = df.select_dtypes(include=["int", "float"]).columns
+# Calcul de l'étendue : max - min
+etendues = df_quantitatif.max(numeric_only=True) - df_quantitatif.min(numeric_only=True)
+
+# Conversion en liste [(nom_colonne, etendue), ...]
+liste_etendues = [(col, float(et)) for col, et in etendues.items()]
+
+# Affichage des résultats
+print("Étendue des colonnes quantitatives :")
+for col, et in liste_etendues:
+    print(f"- {col} : {et}")
+
+
+#Question 6 
+df = pd.read_csv("/home/thomas04dupuy/Desktop/resultats-elections-presidentielles-2022-1er-tour.csv")
+
+# === Sélection des colonnes quantitatives ===
+colonnes_quantitatives = df.select_dtypes(include=["int", "float"]).columns
+df_quantitatif = df[colonnes_quantitatives]
+
+# === Calculs statistiques ===
+moyennes = df_quantitatif.mean()
+medianes = df_quantitatif.median()
+variances = df_quantitatif.var()
+ecarts_type = df_quantitatif.std()
+etendues = df_quantitatif.max() - df_quantitatif.min()
+ecarts_absolus = df_quantitatif.apply(lambda col: np.mean(np.abs(col - col.mean())))
+
+# Mode → nécessite une petite précaution
+modes = df_quantitatif.mode().iloc[0]  # on prend le premier mode s'il y en a plusieurs
+
+# === Affichage sur le terminal ===
+print("\n=== Paramètres statistiques des colonnes quantitatives ===\n")
+
+for col in colonnes_quantitatives:
+    print(f"▶ {col}")
+    print(f"   Moyenne : {moyennes[col]:.2f}")
+    print(f"   Médiane : {medianes[col]:.2f}")
+    print(f"   Mode : {modes[col]:.2f}")
+    print(f"   Variance : {variances[col]:.2f}")
+    print(f"   Écart-type : {ecarts_type[col]:.2f}")
+    print(f"   Étendue : {etendues[col]:.2f}")
+    print(f"   Écart absolu à la moyenne : {ecarts_absolus[col]:.2f}")
+    print("-" * 50)
+
+#Question 7 
+# df = pd.read_csv("/home/thomas04dupuy/Desktop/resultats-elections-presidentielles-2022-1er-tour.csv")
+
+# Sélectionner les colonnes quantitatives
+colonnes_quantitatives = df.select_dtypes(include=["int", "float"]).columns
+df_quantitatif = df[colonnes_quantitatives]
+
+# Calcul des quartiles et déciles
+q1 = df_quantitatif.quantile(0.25)
+q3 = df_quantitatif.quantile(0.75)
+d1 = df_quantitatif.quantile(0.1)
+d9 = df_quantitatif.quantile(0.9)
+
+# Distance interquartile (IQR)
+iqr = q3 - q1
+
+# Distance interdécile (IDR)
+idr = d9 - d1
+
+# Conversion en listes [(colonne, valeur)]
+liste_iqr = [(col, float(val)) for col, val in iqr.items()]
+liste_idr = [(col, float(val)) for col, val in idr.items()]
+
+# Affichage
+print("Distance interquartile (IQR) :")
+for col, val in liste_iqr:
+    print(f"- {col} : {val}")
+
+print("\nDistance interdécile (IDR) :")
+for col, val in liste_idr:
+    print(f"- {col} : {val}")
+
+#Question 8 
+import os
+import re
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# === Charger le fichier CSV ===
+df = pd.read_csv("/home/thomas04dupuy/Desktop/resultats-elections-presidentielles-2022-1er-tour.csv")
+
+# === Sélectionner les colonnes quantitatives ===
+colonnes_quantitatives = df.select_dtypes(include=["int", "float"]).columns
+
+# === Créer le dossier de sortie ===
+OUT_DIR = "img"
+os.makedirs(OUT_DIR, exist_ok=True)
+
+# === Fonction pour nettoyer les noms de colonnes ===
+def slugify(s: str) -> str:
+    s = (s or "").strip().lower()
+    s = re.sub(r"[^\w\s-]", "", s)
+    s = re.sub(r"[\s_-]+", "-", s)
+    return s or "colonne"
+
+# === Boucle pour tracer chaque boîte à moustaches ===
+for col in colonnes_quantitatives:
+    serie = df[col].dropna()
+    if serie.empty or len(serie) < 2:
+        continue  # saute les colonnes vides ou avec une seule valeur
+
+    plt.figure(figsize=(4, 6))
+    plt.boxplot(serie, vert=True, whis=1.5, showmeans=True)
+    plt.title(f"Boîte à moustaches — {col}")
+    plt.ylabel(col)
+
+    fname = f"boxplot_{slugify(col)}.png"
+    out_path = os.path.join(OUT_DIR, fname)
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=150)
+    plt.close()
+
+print(f"✅ Boîtes à moustaches enregistrées dans : {os.path.abspath(OUT_DIR)}")
+
+#Question 10 
+import re
+import numpy as np
+import pandas as pd
+
+# === Chemin simplifié ===
+df = pd.read_csv("/home/thomas04dupuy/Desktop/island-index.csv")
+
+
+candidats = [c for c in df.columns if re.search(r"(surface|superficie|area)", c, flags=re.I)]
+candidats_km = [c for c in candidats if re.search(r"km", c, flags=re.I)]
+
+if candidats_km:
+    COL_SURF = candidats_km[0]
+elif candidats:
+    COL_SURF = candidats[0]
+else:
+    print("Colonnes disponibles :", df.columns.tolist())
+    raise ValueError("Aucune colonne de surface détectée. Vérifie le nom exact dans ton CSV.")
+
+print(f"✅ Colonne de surface détectée : {COL_SURF}")
+
+
+surf = (
+    df[COL_SURF]
+    .astype(str)
+    .str.replace("\u00a0", " ", regex=False)
+    .str.replace(r"\s", "", regex=True)
+    .str.replace(",", ".", regex=False)
+    .str.replace("km2", "", flags=re.I, regex=True)
+    .str.replace("km²", "", flags=re.I, regex=True)
+)
+surf_num = pd.to_numeric(surf, errors="coerce")
+
+
+bins   = [0, 10, 25, 50, 100, 2500, 5000, 10000, np.inf]
+labels = ["]0,10]", "]10,25]", "]25,50]", "]50,100]", "]100,2500]", "]2500,5000]", "]5000,10000]", "]10000,+∞["]
+
+cats = pd.cut(surf_num, bins=bins, labels=labels, right=True, include_lowest=False)
+compte = cats.value_counts().reindex(labels, fill_value=0)
+
+print("\n=== Dénombrement des îles par classe de surface (km²) ===")
+for classe, n in compte.items():
+    print(f"- {classe} : {n}")
+
+
+df["Classe_Surface_km2"] = cats
+
+
+
