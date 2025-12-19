@@ -1,0 +1,470 @@
+#La Loi de Dirac
+import numpy as np 
+import matplotlib.pyplot as plt
+
+# === Fonction pour tracer une loi de Dirac ===
+def plot_dirac(a=0.0, weight=1.0):
+    """
+    Visualise une loi de Dirac centrée en a (masse ponctuelle).
+    a : position du pic
+    weight : hauteur de la masse (probabilité totale)
+    """
+    # Axe des x autour du point a
+    x_min, x_max = a - 3, a + 3
+    xs = np.linspace(x_min, x_max, 400)
+
+    # Création de la figure
+    plt.figure(figsize=(7, 4))
+    plt.plot(xs, np.zeros_like(xs), color="black", linewidth=1)  # axe horizontal
+
+    # Tige (stem) représentant la masse ponctuelle
+    plt.stem([a], [weight], linefmt='r-', markerfmt='ro', basefmt='k-')
+
+    # Titres et mise en forme
+    plt.title(f"Loi de Dirac centrée en a = {a}")
+    plt.xlabel("x")
+    plt.ylabel("Probabilité (masse)")
+    plt.xlim(x_min, x_max)
+    plt.ylim(0, max(1.1 * weight, 1))
+    plt.grid(True, linestyle="--", alpha=0.6)
+    plt.tight_layout()
+
+    # Affiche le graphique
+    plt.show()
+
+#La loi uniforme discrète
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import uniform, norm
+
+
+# === Fonction pour tracer une loi uniforme ===
+def plot_uniform(a=0, b=1):
+    """
+    Visualise la loi uniforme U(a, b)
+    a : borne inférieure
+    b : borne supérieure
+    """
+    x = np.linspace(a - (b - a) * 0.2, b + (b - a) * 0.2, 400)
+    y = uniform.pdf(x, loc=a, scale=b - a)
+
+    plt.figure(figsize=(7, 4))
+    plt.plot(x, y, color='green', linewidth=2)
+    plt.fill_between(x, y, color='lightgreen', alpha=0.4)
+    plt.title(f"Loi uniforme U({a}, {b})")
+    plt.xlabel("x")
+    plt.ylabel("Densité de probabilité")
+    plt.grid(True, linestyle="--", alpha=0.6)
+    plt.tight_layout()
+    plt.show()
+
+
+# === Fonction pour tracer une loi normale ===
+def plot_normale(mu=0, sigma=1):
+    """
+    Visualise la loi normale N(mu, sigma²)
+    mu : moyenne
+    sigma : écart-type
+    """
+    x = np.linspace(mu - 4 * sigma, mu + 4 * sigma, 400)
+    y = norm.pdf(x, mu, sigma)
+
+    plt.figure(figsize=(7, 4))
+    plt.plot(x, y, color='blue', linewidth=2)
+    plt.fill_between(x, y, color='skyblue', alpha=0.4)
+    plt.title(f"Loi normale N({mu}, {sigma}²)")
+    plt.xlabel("x")
+    plt.ylabel("Densité de probabilité")
+    plt.grid(True, linestyle="--", alpha=0.6)
+    plt.tight_layout()
+    plt.show()
+
+
+    #La loi binomiale
+
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import binom
+
+def plot_binomiale(n=10, p=0.5):
+    """
+    Visualise la loi binomiale B(n, p)
+    n : nombre d'expériences
+    p : probabilité de succès à chaque essai
+    """
+    # Axe des abscisses (valeurs possibles : 0, 1, 2, ..., n)
+    x = np.arange(0, n + 1)
+    # Probabilités associées (fonction de masse)
+    y = binom.pmf(x, n, p)
+
+    # Création du graphique
+    plt.figure(figsize=(7, 4))
+    plt.stem(x, y, linefmt='r-', markerfmt='ro', basefmt='k-')
+    plt.title(f"Loi binomiale B({n}, {p})")  # ← ligne corrigée
+    plt.xlabel("Nombre de succès (k)")
+    plt.ylabel("Probabilité P(X = k)")
+    plt.grid(True, linestyle="--", alpha=0.6)
+    plt.tight_layout()
+    plt.show()
+
+#La loi de Poisson
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import poisson
+
+
+# === Fonction pour tracer une loi de Poisson ===
+def plot_poisson(lam=3):
+    """
+    Visualise la loi de Poisson P(λ)
+    lam : valeur moyenne (λ), c'est-à-dire le nombre moyen d'événements
+    """
+    # Axe des abscisses (valeurs discrètes possibles)
+    x = np.arange(0, lam * 3 + 1)
+    # Probabilités associées (fonction de masse de probabilité)
+    y = poisson.pmf(x, lam)
+
+    # Création du graphique
+    plt.figure(figsize=(7, 4))
+    plt.stem(x, y, linefmt='b-', markerfmt='bo', basefmt='k-')
+    plt.title(f"Loi de Poisson P(λ = {lam})")
+    plt.xlabe
+
+#La loi Zipf-Mandelbrot
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+def zipf_mandelbrot_pmf(N=50, s=1.1, q=1.0):
+    """
+    Calcule la PMF (probabilité) de la loi de Zipf–Mandelbrot sur les rangs 1..N.
+    P(k) = C / (k + q)^s  avec normalisation  sum_k P(k) = 1
+    Paramètres
+    ----------
+    N : int
+        Nombre total d'objets/rangs (support fini).
+    s : float
+        Exposant (> 1 recommandé pour une somme bien comportée).
+    q : float
+        Décalage (>= 0). q=0 redonne la Zipf "pure".
+    Retour
+    ------
+    k : np.ndarray shape (N,)
+        Rangs 1..N
+    p : np.ndarray shape (N,)
+        Probabilités normalisées associées à chaque rang.
+    """
+    k = np.arange(1, N + 1, dtype=float)
+    weights = 1.0 / np.power(k + q, s)
+    Z = weights.sum()  # constante de normalisation
+    p = weights / Z
+    return k, p
+
+
+def plot_zipf_mandelbrot(N=50, s=1.1, q=1.0, loglog=True):
+    """
+    Trace la loi de Zipf–Mandelbrot :
+      - en barres (linéaire)
+      - en log-log (rang-fréquence), pratique pour vérifier la décroissance en loi de puissance
+    """
+    k, p = zipf_mandelbrot_pmf(N=N, s=s, q=q)
+
+    # --- Graphique 1 : barres (linéaire)
+    plt.figure(figsize=(7, 4))
+    plt.bar(k, p)
+    plt.xlabel("Rang k")
+    plt.ylabel("Probabilité P(k)")
+    plt.title(f"Loi de Zipf–Mandelbrot (N={N}, s={s}, q={q})")
+    plt.tight_layout()
+
+    # --- Graphique 2 : log-log (optionnel)
+    if loglog:
+        plt.figure(figsize=(7, 4))
+        plt.loglog(k, p, marker="o", linestyle="none")
+        # Ligne guide ~ (k+q)^(-s) (proportionnelle), pour visualisation
+        # On ajuste une droite en log-log pour montrer la pente approchée -s
+        coeffs = np.polyfit(np.log10(k + q), np.log10(p), 1)
+        pente = coeffs[0]
+        # Courbe de référence (reconstruite à partir de la régression)
+        pref_line = 10 ** (coeffs[1]) * (k + q) ** pente
+        plt.loglog(k, pref_line, linewidth=1)
+
+        plt.xlabel("log10(rang k+q)")
+        plt.ylabel("log10(P(k))")
+        plt.title(f"Zipf–Mandelbrot (log-log) • pente ≈ {pente:.2f}")
+        plt.tight_layout()
+
+plt.savefig("zipf-mandelbrot.png", dpi=150)
+plt.close()
+
+if __name__ == "__main__":
+    # Exemples rapides : ajuste N, s, q selon ton cas
+    plot_zipf_mandelbrot(N=50, s=1.1, q=1.0)
+    # plot_zipf_mandelbrot(N=100, s=1.3, q=2.0)
+
+
+#Loi Poisson
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Paramètre lambda (taux moyen d’événements)
+lam = 2.0
+
+# Domaine continu pour t ≥ 0
+t = np.linspace(0, 5, 200)
+# Densité de probabilité (loi exponentielle associée au processus de Poisson)
+f = lam * np.exp(-lam * t)
+
+# Graphique
+plt.figure(figsize=(7, 4))
+plt.plot(t, f, color="darkorange", lw=2)
+plt.title(f"Distribution continue associée à la loi de Poisson (λ = {lam})")
+plt.xlabel("Temps entre deux événements (t)")
+plt.ylabel("Densité de probabilité f(t)")
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+plt.savefig("poisson_continue.png", dpi=150)
+plt.close()
+
+#La loi normale
+import numpy as np
+import matplotlib.pyplot as plt
+from math import sqrt, pi, exp
+
+# Paramètres de la loi normale
+mu = 0       # moyenne
+sigma = 1    # écart type
+
+# Domaine des valeurs continues
+x = np.linspace(mu - 4*sigma, mu + 4*sigma, 400)
+# Densité de probabilité f(x)
+f = (1 / (sigma * sqrt(2 * pi))) * np.exp(-((x - mu)**2) / (2 * sigma**2))
+
+# Création du graphique
+plt.figure(figsize=(7, 4))
+plt.plot(x, f, color="royalblue", lw=2)
+plt.title(f"Loi normale (μ = {mu}, σ = {sigma})")
+plt.xlabel("Valeurs de la variable X")
+plt.ylabel("Densité de probabilité f(x)")
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+
+# Enregistrer l'image (au lieu de plt.show())
+plt.savefig("loi_normale.png", dpi=150)
+plt.close()
+
+print("✅ Image enregistrée : loi_normale.png")
+
+#la Loi log-normale
+import numpy as np
+import matplotlib.pyplot as plt
+from math import sqrt, pi, exp
+
+# === Paramètres de la loi log-normale ===
+mu = 0       # moyenne du logarithme
+sigma = 0.5  # écart type du logarithme
+
+# Domaine des valeurs (X > 0)
+x = np.linspace(0.001, 5, 400)
+
+# Densité de probabilité (formule de la loi log-normale)
+f = (1 / (x * sigma * sqrt(2 * pi))) * np.exp(-((np.log(x) - mu)**2) / (2 * sigma**2))
+
+# === Création du graphique ===
+plt.figure(figsize=(7, 4))
+plt.plot(x, f, color="seagreen", lw=2)
+plt.title(f"Loi log-normale (μ = {mu}, σ = {sigma})")
+plt.xlabel("Valeur de la variable X (>0)")
+plt.ylabel("Densité de probabilité f(x)")
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+
+# === Sauvegarde du graphique (au lieu de plt.show()) ===
+plt.savefig("loi_log_normale.png", dpi=150)
+plt.close()
+
+print("✅ Image enregistrée : loi_log_normale.png")
+
+#Loi uniforme
+import numpy as np
+import matplotlib.pyplot as plt
+
+# === Paramètres de la loi uniforme ===
+a = 0   # borne inférieure
+b = 10  # borne supérieure
+
+# Domaine des valeurs continues
+x = np.linspace(a - 1, b + 1, 400)
+
+# Densité de probabilité f(x)
+f = np.where((x >= a) & (x <= b), 1 / (b - a), 0)
+
+# === Création du graphique ===
+plt.figure(figsize=(7, 4))
+plt.plot(x, f, color="orange", lw=2)
+plt.fill_between(x, f, color="orange", alpha=0.3)
+plt.title(f"Loi uniforme continue sur [{a}, {b}]")
+plt.xlabel("Valeur de la variable X")
+plt.ylabel("Densité de probabilité f(x)")
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+
+# === Sauvegarde du graphique ===
+plt.savefig("loi_uniforme.png", dpi=150)
+plt.close()
+
+print("✅ Image enregistrée : loi_uniforme.png")
+
+#loi du x²
+import numpy as np
+import matplotlib.pyplot as plt
+from math import gamma, sqrt, pi, exp
+
+# === Paramètre de la loi du χ² ===
+k = 5  # degrés de liberté (tu peux changer la valeur : 1, 2, 10, ...)
+
+# Domaine des valeurs continues (X >= 0)
+x = np.linspace(0, 30, 400)
+
+# === Fonction de densité de probabilité ===
+f = (1 / (2 ** (k / 2) * gamma(k / 2))) * (x ** (k / 2 - 1)) * np.exp(-x / 2)
+
+# === Création du graphique ===
+plt.figure(figsize=(7, 4))
+plt.plot(x, f, color="crimson", lw=2)
+plt.title(f"Loi du khi-deux (χ²) avec k = {k} degrés de liberté")
+plt.xlabel("Valeur de la variable X (≥ 0)")
+plt.ylabel("Densité de probabilité f(x)")
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+
+# === Sauvegarde du graphique ===
+plt.savefig("loi_chi2.png", dpi=150)
+plt.close()
+
+print("✅ Image enregistrée : loi_chi2.png")
+
+
+#Loi de Pareto
+import numpy as np
+import matplotlib.pyplot as plt
+
+# === Paramètres de la loi de Pareto ===
+alpha = 2.5   # paramètre de forme (plus il est grand, plus la queue est courte)
+xm = 1.0      # valeur minimale (borne de départ)
+
+# Domaine des valeurs continues (x >= xm)
+x = np.linspace(xm, 10, 400)
+
+# === Fonction de densité de probabilité (PDF) ===
+f = alpha * (xm ** alpha) / (x ** (alpha + 1))
+
+# === Création du graphique ===
+plt.figure(figsize=(7, 4))
+plt.plot(x, f, color="purple", lw=2)
+plt.fill_between(x, f, color="purple", alpha=0.3)
+plt.title(f"Loi de Pareto (α = {alpha}, xₘ = {xm})")
+plt.xlabel("Valeur de la variable X (≥ xₘ)")
+plt.ylabel("Densité de probabilité f(x)")
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+
+# === Sauvegarde du graphique ===
+plt.savefig("loi_pareto.png", dpi=150)
+plt.close()
+
+print("✅ Image enregistrée : loi_pareto.png")
+
+#Question 2
+import math
+
+# === 1️⃣ Fonction : moyenne (espérance mathématique) ===
+def moyenne(distribution, *params):
+    """
+    Calcule la moyenne (espérance) d'une loi donnée.
+    distribution : nom de la loi ("dirac", "uniforme", "normale", "binomiale", "poisson", "pareto")
+    *params : paramètres selon la loi
+    """
+    if distribution == "dirac":
+        # Loi de Dirac centrée sur une valeur a
+        a, = params
+        return a
+
+    elif distribution == "uniforme":
+        a, b = params
+        return (a + b) / 2
+
+    elif distribution == "normale":
+        mu, sigma = params
+        return mu
+
+    elif distribution == "binomiale":
+        n, p = params
+        return n * p
+
+    elif distribution == "poisson":
+        lam, = params
+        return lam
+
+    elif distribution == "pareto":
+        alpha, xm = params
+        if alpha > 1:
+            return (alpha * xm) / (alpha - 1)
+        else:
+            return math.inf  # moyenne non définie si α ≤ 1
+
+    else:
+        raise ValueError("Loi inconnue. Choisis parmi : dirac, uniforme, normale, binomiale, poisson, pareto.")
+
+
+# === 2️⃣ Fonction : écart type (σ) ===
+def ecart_type(distribution, *params):
+    """
+    Calcule l'écart type d'une loi donnée.
+    """
+    if distribution == "dirac":
+        return 0
+
+    elif distribution == "uniforme":
+        a, b = params
+        return (b - a) / math.sqrt(12)
+
+    elif distribution == "normale":
+        mu, sigma = params
+        return sigma
+
+    elif distribution == "binomiale":
+        n, p = params
+        return math.sqrt(n * p * (1 - p))
+
+    elif distribution == "poisson":
+        lam, = params
+        return math.sqrt(lam)
+
+    elif distribution == "pareto":
+        alpha, xm = params
+        if alpha > 2:
+            return xm * math.sqrt(alpha / ((alpha - 1) ** 2 * (alpha - 2)))
+        else:
+            return math.inf  # σ non défini si α ≤ 2
+
+    else:
+        raise ValueError("Loi inconnue. Choisis parmi : dirac, uniforme, normale, binomiale, poisson, pareto.")
+
+
+# === 3️⃣ Démonstration ===
+if __name__ == "__main__":
+    lois = [
+        ("dirac", (5,)),
+        ("uniforme", (0, 10)),
+        ("normale", (0, 2)),
+        ("binomiale", (20, 0.3)),
+        ("poisson", (4,)),
+        ("pareto", (3, 1))
+    ]
+
+    print("=== Moyenne et écart type pour chaque loi ===")
+    for nom, params in lois:
+        m = moyenne(nom, *params)
+        s = ecart_type(nom, *params)
+        print(f"Loi {nom.capitalize()} {params} → Moyenne = {m:.3f}, σ = {s:.3f}")
